@@ -43,8 +43,8 @@ input("Press Enter to continue...")
 # TODO: Print the `gender` of the first 20 rows
 
 print("\nTASK 2: Printing the genders of the first 20 samples")
-for i in range(0,20):
-    print(data_list[i][6])
+for line in data_list[:20]:
+    print(line[6])
 
 
 # Cool! We can get the rows(samples) iterating with a for and the columns(features) by index.
@@ -56,6 +56,7 @@ input("Press Enter to continue...")
 # TASK 3
 # TODO: Create a function to add the columns(features) of a list in another list in the same order
 
+
 def column_to_list(data, index):
     """"
     Add the columns(features) of a list in another list in the same order.
@@ -66,10 +67,7 @@ def column_to_list(data, index):
         List containing the data's selected column.
     """
     column_list = []
-    ncol = len(data[1])
-    for i in range(0,len(data)):
-        if index < 0:
-            index = ncol+index
+    for i in range(len(data)):
         column_list.append(data[i][index])
     # Tip: You can use a for to iterate over the samples, get the feature by index and append into a list
     return column_list
@@ -93,8 +91,17 @@ input("Press Enter to continue...")
 # TODO: Count each gender. You should not use a function to do that.
 male = 0
 female = 0
-male = column_to_list(data_list,-2).count("Male")
-female = column_to_list(data_list,-2).count("Female")
+gender_na = 0
+column_gender = column_to_list(data_list,-2)
+for line in column_gender:
+    if line == "Male":
+        male += 1
+    elif line == "Female":
+        female += 1
+    else:
+        gender_na += 1
+
+
 
 
 # Checking the result
@@ -113,6 +120,7 @@ input("Press Enter to continue...")
 # TODO: Create a function to count the genders. Return a list
 # Should return a list with [count_male, counf_female] (e.g., [10, 15] means 10 Males, 15 Females)
 
+
 def count_gender(data_list):
     """"
     Count the genders (Male or Female) of a list.
@@ -123,8 +131,16 @@ def count_gender(data_list):
     """
     male = 0
     female = 0
-    male = column_to_list(data_list, -2).count("Male")
-    female = column_to_list(data_list, -2).count("Female")
+    gender_na = 0   # It could be used for later implementation to measure the impact of fields with no value
+    column_gender = column_to_list(data_list,-2)
+    for item in column_gender:
+        if item == "Male":
+            male += 1
+        elif item == "Female":
+            female += 1
+        else:
+            gender_na += 1
+
     return [male, female]
 
 
@@ -143,6 +159,8 @@ input("Press Enter to continue...")
 # TASK 6
 # TODO: Create a function to get the most popular gender and print the gender as string.
 # We expect to see "Male", "Female" or "Equal" as answer.
+
+
 def most_popular_gender(data_list):
     """"
     Define which gender is most popular: Male or Female.
@@ -153,11 +171,14 @@ def most_popular_gender(data_list):
     """
 
     gender_count = count_gender(data_list)
-    # gender_count[0] = count male and gender_count[1] = count female
     if gender_count[0] > gender_count[1]:
         answer = 'Male'
-    else:
+    elif gender_count[0] < gender_count[1]:
         answer = 'Female'
+    elif gender_count[0] == gender_count[1]:
+        answer = 'Equal'
+    else:
+        answer = 'ERROR: Male or Female data could be wrong in this data list provided'
 
     return answer
 
@@ -189,6 +210,7 @@ input("Press Enter to continue...")
 # TODO: Plot a similar graph for user_types. Make sure the legend is correct.
 print("\nTASK 7: Check the chart!")
 
+
 def count_user_type(data_list):
     """"
     Count the user types (Customer or Subscriber) of a list.
@@ -199,9 +221,19 @@ def count_user_type(data_list):
     """
     customer = 0
     subscriber = 0
-    customer = column_to_list(data_list, -3).count("Customer")
-    subscriber = column_to_list(data_list, -3).count("Subscriber")
+    user_type_na = 0
+    column_user_type = column_to_list(data_list, -3)
+    for item in column_user_type:
+        if item == "Customer":
+            customer += 1
+        elif item == "Subscriber":
+            subscriber += 1
+        else:
+            user_type_na += 1
+            # It could be used for later implementation to measure the impact of fields with no value
+
     return [customer, subscriber]
+
 
 user_type_list = column_to_list(data_list, -3)
 types = ["Customer", "Subscriber"]
@@ -239,10 +271,10 @@ trip_duration_list_sorted = sorted(map(float,trip_duration_list))
 min_trip = 0.
 min_trip = trip_duration_list_sorted[0]
 max_trip = 0.
-max_trip = trip_duration_list_sorted[len(trip_duration_list_sorted)-1]
+max_trip = trip_duration_list_sorted[-1]
 sum_trip = 0.
 mean_trip = 0.
-for i in range(0,len(trip_duration_list_sorted)):
+for i in range(len(trip_duration_list_sorted)):
     sum_trip += trip_duration_list_sorted[i]
 mean_trip = sum_trip/len(trip_duration_list_sorted)
 median_trip = 0.
@@ -294,6 +326,7 @@ input("Press Enter to continue...")
 print("Will you face it?")
 answer = "yes"
 
+
 def count_items(column_list):
     """"
     Count the types of a list.
@@ -305,8 +338,15 @@ def count_items(column_list):
     item_types = set(column_list)
     item_types = list(item_types)
     count_items = []
+    number_items = 0
+
     for item in item_types:
-        count_items.append(column_list.count(item))
+        for line in column_list:
+            if line == item:
+                number_items += 1
+        count_items.append(number_items)
+        number_items = 0
+
     return item_types, count_items
 
 
